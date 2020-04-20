@@ -4,6 +4,7 @@ import org.deeplearning4j.nn.conf.CacheMode
 import org.deeplearning4j.nn.conf.WorkspaceMode
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer
 import org.deeplearning4j.nn.graph.ComputationGraph
+import org.deeplearning4j.ui.api.UIServer.getInstance
 import org.deeplearning4j.zoo.model.Darknet19
 
 class Network internal constructor(private val numLabels: Int) {
@@ -16,7 +17,19 @@ class Network internal constructor(private val numLabels: Int) {
                     .workspaceMode(WorkspaceMode.ENABLED)
                     .cacheMode(CacheMode.DEVICE)
                     .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
-                    .build()
-            return model.init()
+                    .build().init()
+
+            addListeners(model);
+            return model
         }
+
+    fun addListeners(model: ComputationGraph) {
+
+    }
+
+    fun addUI() {
+        val ui = getInstance();
+
+
+    }
 }
