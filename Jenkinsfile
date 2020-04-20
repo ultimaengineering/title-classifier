@@ -24,8 +24,8 @@ spec:
     stage('Build and test') {
      checkout scm
      container('application-container') {
-      sh 'chmod 777 mvnw'
-      sh './mvnw clean install -B -U'
+      sh 'chmod 777 gradlew'
+      sh './gradlew clean build'
      }
     }
     stage('Build with Kaniko') {
