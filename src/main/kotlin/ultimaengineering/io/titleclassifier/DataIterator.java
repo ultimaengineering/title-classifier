@@ -26,7 +26,7 @@ public class DataIterator {
     private static ParentPathLabelGenerator labelMaker = new ParentPathLabelGenerator();
     private static InputSplit trainData,testData;
     private static final int height = 224;
-    private static final int batchSize =
+    private static final int batchSize = 128;
     private static final int width = 224;
     private static final int channels = 3;
 
@@ -51,6 +51,7 @@ public class DataIterator {
         ImageRecordReader recordReader = new ImageRecordReader(height, width, channels, labelMaker);
         recordReader.initialize(inputSplit);
         DataSetIterator iter =  new RecordReaderDataSetIterator(recordReader, batchSize, 1, recordReader.numLabels());
+        return iter;
     }
 
     private boolean sufficientLabelData(Path path) {
