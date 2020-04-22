@@ -4,10 +4,26 @@ import org.deeplearning4j.nn.conf.CacheMode
 import org.deeplearning4j.nn.conf.WorkspaceMode
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer
 import org.deeplearning4j.nn.graph.ComputationGraph
+import org.deeplearning4j.optimize.api.BaseTrainingListener
+import org.deeplearning4j.optimize.api.InvocationType
+import org.deeplearning4j.optimize.listeners.CheckpointListener
+import org.deeplearning4j.optimize.listeners.EvaluativeListener
+import org.deeplearning4j.optimize.listeners.PerformanceListener
+import org.deeplearning4j.optimize.listeners.TimeIterationListener
 import org.deeplearning4j.ui.api.UIServer.getInstance
+import org.deeplearning4j.ui.stats.StatsListener
+import org.deeplearning4j.ui.storage.InMemoryStatsStorage
 import org.deeplearning4j.zoo.model.Darknet19
+import org.nd4j.evaluation.classification.Evaluation
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
+import java.nio.file.Path
 
-class Network internal constructor(private val numLabels: Int) {
+class Network internal constructor(private val numLabels: Int,
+                                   private val estimatedIterations : Int,
+                                   private val modelDirectory : Path,
+                                   private val testDataSet : DataSetIterator
+
+) {
     private val seed = 12345
     val network: ComputationGraph
         get() {
@@ -18,18 +34,39 @@ class Network internal constructor(private val numLabels: Int) {
                     .cacheMode(CacheMode.DEVICE)
                     .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
                     .build().init()
-
-            addListeners(model);
+            addListeners(model)
             return model
         }
 
     fun addListeners(model: ComputationGraph) {
-
+        model.setListeners(addUI(), getEvaluationListener(), getCheckPointListener(), getPerformanceListener(), getTimeIterationListener())
     }
 
-    fun addUI() {
-        val ui = getInstance();
+    fun addUI(): StatsListener {
+        val ui = getInstance()
+        val statsStorage = InMemoryStatsStorage()
+        ui.attach(statsStorage)
+        return StatsListener(statsStorage)
+    }
 
+    fun getPerformanceListener(): BaseTrainingListener {
+        return PerformanceListener(1, true)
+    }
 
+    fun getEvaluationListener(): BaseTrainingListener {
+        val eval = Evaluation()
+        eval.stats(true, true)
+        return EvaluativeListener(testDataSet, 1, InvocationType.EPOCH_END, eval)
+    }
+
+    fun getCheckPointListener(): BaseTrainingListener {
+        return CheckpointListener.Builder(modelDirectory.toFile())
+                  .keepLastAndEvery(3, 4)
+                  .saveEveryNIterations(100)
+                  .build()
+    }
+
+    fun getTimeIterationListener(): BaseTrainingListener {
+        return TimeIterationListener(estimatedIterations)
     }
 }

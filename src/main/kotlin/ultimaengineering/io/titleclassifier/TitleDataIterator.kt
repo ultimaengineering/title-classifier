@@ -1,76 +1,92 @@
-package ultimaengineering.io.titleclassifier;
+package ultimaengineering.io.titleclassifier
 
-import org.datavec.api.io.filters.RandomPathFilter;
-import org.datavec.api.io.labels.ParentPathLabelGenerator;
-import org.datavec.api.split.CollectionInputSplit;
-import org.datavec.api.split.InputSplit;
-import org.datavec.image.loader.BaseImageLoader;
-import org.datavec.image.recordreader.ImageRecordReader;
-import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
-import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.datavec.api.io.filters.RandomPathFilter
+import org.datavec.api.io.labels.ParentPathLabelGenerator
+import org.datavec.api.split.CollectionInputSplit
+import org.datavec.api.split.InputSplit
+import org.datavec.image.loader.BaseImageLoader
+import org.datavec.image.recordreader.ImageRecordReader
+import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
+import java.io.IOException
+import java.net.URI
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.*
+import java.util.stream.Collectors
 
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
+class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize: Int) {
 
-import static org.nd4j.shade.protobuf.common.io.Files.getFileExtension;
-
-
-public class DataIterator {
-
-    private static final String [] allowedExtensions = BaseImageLoader.ALLOWED_FORMATS;
-    private static final Set<String> extensions = new HashSet<>(Arrays.asList(allowedExtensions));
-    private static final Hashtable<Path, Long> fileCounts = new Hashtable<>();
-    private static ParentPathLabelGenerator labelMaker = new ParentPathLabelGenerator();
-    private static InputSplit trainData,testData;
-    private static final int height = 224;
-    private static final int batchSize = 128;
-    private static final int width = 224;
-    private static final int channels = 3;
-
-    public DataIterator(Path dataDirectory, Integer trainDataPercentage, Integer trainPercentage, Integer batchSize) throws IOException {
-        CollectionInputSplit collectionInputSplit = new CollectionInputSplit(findAllImages(dataDirectory));
-        RandomPathFilter randomPathFilter = new RandomPathFilter(new Random(13), allowedExtensions, 0);
-        InputSplit[] filesInDirSplit = collectionInputSplit.sample(randomPathFilter, trainDataPercentage, 100-trainDataPercentage);
-        trainData = filesInDirSplit[0];
-        testData = filesInDirSplit[1];
+    fun initDateSetIterators(batchSize: Int) {
+        trainDataIterator = makeDataSetIterator(trainData, batchSize)
+        testDataIterator = makeDataSetIterator(testData, batchSize)
     }
 
-    public URI[] findAllImages(Path dataDir) throws IOException {
+    @Throws(IOException::class)
+    private fun findAllImages(dataDir: Path?): List<URI> {
         return Files.walk(dataDir)
-                .filter(Files::isRegularFile)
-                .filter(this::validExtension)
-                .filter(this::sufficientLabelData)
-                .map(Path::toUri)
-                .toArray(URI[]::new);
+                .filter { path: Path -> Files.isRegularFile(path) }
+                .filter { file: Path -> validExtension(file) }
+                .filter { path: Path -> sufficientLabelData(path) }
+                .map { obj: Path -> obj.toUri() }
+                .collect(Collectors.toList())
     }
 
-    private DataSetIterator makeDataSetIterator(InputSplit inputSplit) throws IOException {
-        ImageRecordReader recordReader = new ImageRecordReader(height, width, channels, labelMaker);
-        recordReader.initialize(inputSplit);
-        DataSetIterator iter =  new RecordReaderDataSetIterator(recordReader, batchSize, 1, recordReader.numLabels());
-        return iter;
+    @Throws(IOException::class)
+    private fun makeDataSetIterator(inputSplit: InputSplit, batchSize: Int): DataSetIterator {
+        val recordReader = ImageRecordReader(height, width, channels, labelMaker)
+        recordReader.initialize(inputSplit)
+        return RecordReaderDataSetIterator(recordReader, batchSize, 1, recordReader.numLabels())
     }
 
-    private boolean sufficientLabelData(Path path) {
-        try {
-            if (fileCounts.containsKey(path.getParent())) {
-                return fileCounts.get(path.getParent()) > 20;
+    private fun sufficientLabelData(path: Path): Boolean {
+        return try {
+            if (fileCounts.containsKey(path.parent)) {
+                return fileCounts[path.parent]!! > 20
             }
-            Long count = Files.walk(path.getParent())
-                    .filter(Files::isRegularFile)
-                    .filter(this::validExtension)
-                    .count();
-            fileCounts.put(path.getParent(), count);
-            return count > 20;
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to process directory", e);
+            val count = Files.walk(path.parent)
+                    .filter { p -> Files.isRegularFile(p) }
+                    .filter { file: Path -> validExtension(file) }
+                    .count()
+            fileCounts[path.parent] = count
+            count > 20
+        } catch (e: IOException) {
+            throw RuntimeException("Unable to process directory", e)
         }
     }
 
-    private boolean validExtension(Path file) {
-        return extensions.contains(getFileExtension(file.toString()));
+    private fun validExtension(file: Path): Boolean {
+        return extensions.contains(org.nd4j.shade.protobuf.common.io.Files.getFileExtension(file.toString()))
+    }
+
+    fun getTrainIter(): DataSetIterator {
+        return trainDataIterator;
+    }
+
+    fun getTestIter(): DataSetIterator {
+        return testDataIterator
+    }
+
+    companion object {
+        private val allowedExtensions = BaseImageLoader.ALLOWED_FORMATS
+        private val extensions: Set<String> = HashSet(Arrays.asList(*allowedExtensions))
+        private val fileCounts = Hashtable<Path, Long>()
+        private val labelMaker = ParentPathLabelGenerator()
+        private lateinit var trainData: InputSplit
+        private lateinit var testData: InputSplit
+        lateinit var trainDataIterator: DataSetIterator;
+        lateinit var testDataIterator: DataSetIterator;
+        private const val height : Long = 224
+        private const val width : Long  = 224
+        private const val channels : Long  = 3
+    }
+
+    init {
+        val collectionInputSplit = CollectionInputSplit(findAllImages(dataDirectory))
+        val randomPathFilter = RandomPathFilter(Random(13), allowedExtensions, 0)
+        val filesInDirSplit = collectionInputSplit.sample(randomPathFilter, trainDataPercentage.toDouble(), 100 - trainDataPercentage.toDouble())
+        trainData = filesInDirSplit[0]
+        testData = filesInDirSplit[1]
+        initDateSetIterators(batchSize)
     }
 }
