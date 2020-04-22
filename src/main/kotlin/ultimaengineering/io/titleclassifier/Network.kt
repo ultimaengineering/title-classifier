@@ -38,35 +38,35 @@ class Network internal constructor(private val numLabels: Int,
             return model
         }
 
-    fun addListeners(model: ComputationGraph) {
+    private fun addListeners(model: ComputationGraph) {
         model.setListeners(addUI(), getEvaluationListener(), getCheckPointListener(), getPerformanceListener(), getTimeIterationListener())
     }
 
-    fun addUI(): StatsListener {
+    private fun addUI(): StatsListener {
         val ui = getInstance()
         val statsStorage = InMemoryStatsStorage()
         ui.attach(statsStorage)
         return StatsListener(statsStorage)
     }
 
-    fun getPerformanceListener(): BaseTrainingListener {
+    private fun getPerformanceListener(): BaseTrainingListener {
         return PerformanceListener(1, true)
     }
 
-    fun getEvaluationListener(): BaseTrainingListener {
+    private fun getEvaluationListener(): BaseTrainingListener {
         val eval = Evaluation()
         eval.stats(true, true)
         return EvaluativeListener(testDataSet, 1, InvocationType.EPOCH_END, eval)
     }
 
-    fun getCheckPointListener(): BaseTrainingListener {
+    private fun getCheckPointListener(): BaseTrainingListener {
         return CheckpointListener.Builder(modelDirectory.toFile())
                   .keepLastAndEvery(3, 4)
                   .saveEveryNIterations(100)
                   .build()
     }
 
-    fun getTimeIterationListener(): BaseTrainingListener {
+    private fun getTimeIterationListener(): BaseTrainingListener {
         return TimeIterationListener(estimatedIterations)
     }
 }

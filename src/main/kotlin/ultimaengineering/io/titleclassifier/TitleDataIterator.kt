@@ -17,7 +17,7 @@ import java.util.stream.Collectors
 
 class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize: Int) {
 
-    fun initDateSetIterators(batchSize: Int) {
+    private fun initDateSetIterators(batchSize: Int) {
         trainDataIterator = makeDataSetIterator(trainData, batchSize)
         testDataIterator = makeDataSetIterator(testData, batchSize)
     }
