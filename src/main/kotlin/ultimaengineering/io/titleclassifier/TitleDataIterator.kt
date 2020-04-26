@@ -14,6 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.properties.Delegates
 
 class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize: Int) {
 
@@ -30,6 +31,7 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
                 .filter { path: Path -> sufficientLabelData(path) }
                 .map { obj: Path -> obj.toUri() }
                 .collect(Collectors.toList())
+
     }
 
     @Throws(IOException::class)
@@ -67,6 +69,10 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
         return testDataIterator
     }
 
+    fun getIterationsPerEpoch(): Int {
+        return estimatedIterations;
+    }
+
     companion object {
         private val allowedExtensions = BaseImageLoader.ALLOWED_FORMATS
         private val extensions: Set<String> = HashSet(Arrays.asList(*allowedExtensions))
@@ -74,8 +80,9 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
         private val labelMaker = ParentPathLabelGenerator()
         private lateinit var trainData: InputSplit
         private lateinit var testData: InputSplit
-        lateinit var trainDataIterator: DataSetIterator;
-        lateinit var testDataIterator: DataSetIterator;
+        lateinit var trainDataIterator: DataSetIterator
+        lateinit var testDataIterator: DataSetIterator
+        var estimatedIterations by Delegates.notNull<Int>()
         private const val height : Long = 224
         private const val width : Long  = 224
         private const val channels : Long  = 3
@@ -87,6 +94,7 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
         val filesInDirSplit = collectionInputSplit.sample(randomPathFilter, trainDataPercentage.toDouble(), 100 - trainDataPercentage.toDouble())
         trainData = filesInDirSplit[0]
         testData = filesInDirSplit[1]
+        estimatedIterations = (filesInDirSplit[0].length() / batchSize).toInt()
         initDateSetIterators(batchSize)
     }
 }

@@ -1,6 +1,7 @@
 package ultimaengineering.io
 
 import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.default
 import ultimaengineering.io.titleclassifier.Trainer
 import java.nio.file.Paths
 
@@ -12,6 +13,10 @@ class App(parser: ArgParser) {
     val modelPath by parser.storing(
             "-m", "--model",
             help = "path to models")
+
+    val previousModel by parser.storing(
+            "-o", "--old_model", help = "path to previous model"
+    ).default("")
 
     val epochs by parser.storing(
             "-e", "--epochs",
@@ -33,7 +38,7 @@ fun main(args: Array<String>) {
     ArgParser(args).parseInto(::App).run {
         var dataDir = Paths.get(dataPath)
         val modelDir = Paths.get(modelPath)
-
-        Trainer(dataDir, modelDir, epochs, batchSize, trainPercentage)
+        val trainer = Trainer(dataDir, modelDir, epochs, batchSize, trainPercentage, previousModel)
+        trainer.beginTrain()
     }
 }

@@ -13,6 +13,7 @@ import org.deeplearning4j.optimize.listeners.TimeIterationListener
 import org.deeplearning4j.ui.api.UIServer.getInstance
 import org.deeplearning4j.ui.stats.StatsListener
 import org.deeplearning4j.ui.storage.InMemoryStatsStorage
+import org.deeplearning4j.util.ModelSerializer
 import org.deeplearning4j.zoo.model.Darknet19
 import org.nd4j.evaluation.classification.Evaluation
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
@@ -21,19 +22,26 @@ import java.nio.file.Path
 class Network internal constructor(private val numLabels: Int,
                                    private val estimatedIterations : Int,
                                    private val modelDirectory : Path,
-                                   private val testDataSet : DataSetIterator
+                                   private val testDataSet : DataSetIterator,
+                                   private val previousModel : String
 
 ) {
     private val seed = 12345
     val network: ComputationGraph
         get() {
-            val model = Darknet19.builder()
-                    .numClasses(numLabels)
-                    .seed(seed.toLong())
-                    .workspaceMode(WorkspaceMode.ENABLED)
-                    .cacheMode(CacheMode.DEVICE)
-                    .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
-                    .build().init()
+            val model : ComputationGraph
+            if(previousModel.isEmpty()) {
+                model = Darknet19.builder()
+                        .numClasses(numLabels)
+                        .seed(seed.toLong())
+                        .workspaceMode(WorkspaceMode.ENABLED)
+                        .cacheMode(CacheMode.HOST)
+                        .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
+                        .build().init()
+            } else {
+                    model = ModelSerializer.restoreComputationGraph(previousModel, true)
+                    model.init()
+            }
             addListeners(model)
             return model
         }
@@ -62,7 +70,9 @@ class Network internal constructor(private val numLabels: Int,
     private fun getCheckPointListener(): BaseTrainingListener {
         return CheckpointListener.Builder(modelDirectory.toFile())
                   .keepLastAndEvery(3, 4)
-                  .saveEveryNIterations(100)
+                  .saveEveryNIterations(10)
+                  .logSaving(true)
+                  .deleteExisting(true)
                   .build()
     }
 
