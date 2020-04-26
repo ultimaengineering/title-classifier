@@ -41,6 +41,7 @@ spec:
        steps {
        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destinationdocker.ultimaengineering.io/title-classifier'
       }
+      }
      }
    }
   }
