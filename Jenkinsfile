@@ -37,9 +37,9 @@ spec:
        writeFile file: "Dockerfile", text: """
        FROM docker.ultimaengineering.io:deeplearning_base:1.0.0
        MAINTAINER Alexander Montgomery
-       RUN mkdir / home / jenkins / .m2 """
-       sh '''#!/busybox/sh /
-       kaniko/executor--context `pwd`--verbosity debug--destination docker.ultimaengineering.io/test from kaniko:latest '''
+       RUN mkdir/home/jenkins/m2 """
+       steps {
+       sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destinationdocker.ultimaengineering.io/title-classifier'
       }
      }
    }
