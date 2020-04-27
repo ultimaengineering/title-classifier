@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: application-container
-    image: openjdk:openjdk:15-alpine
+    image: openjdk:15-alpine
     command:
     - cat
     tty: true
