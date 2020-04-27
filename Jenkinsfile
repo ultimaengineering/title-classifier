@@ -11,18 +11,12 @@ spec:
     command:
     - cat
     tty: true
-    volumeMounts:
-    - name: artifact
-      mountPath: /data/result
   - name: kaniko
     workingDir: /tmp/jenkins
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
     command:
     - /busybox/cat
-    volumeMounts:
-    - name: artifact
-      mountPath: /data/result
     tty: true
 """
 ) {
