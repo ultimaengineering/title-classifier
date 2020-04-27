@@ -8,11 +8,11 @@ import java.nio.file.Paths
 class App(parser: ArgParser) {
     val dataPath by parser.storing(
             "-d", "--data",
-            help = "data to be trained on")
+            help = "data to be trained on").default("/data")
 
     val modelPath by parser.storing(
             "-m", "--model",
-            help = "path to models")
+            help = "path to models").default("/model")
 
     val previousModel by parser.storing(
             "-o", "--old_model", help = "path to previous model"
@@ -21,17 +21,17 @@ class App(parser: ArgParser) {
     val epochs by parser.storing(
             "-e", "--epochs",
             help = "epochs to train"
-    ) { toInt() }
+    ) { toInt() }.default(20)
 
     val batchSize by parser.storing(
             "-b", "--batchSize",
             help = "selected batch size for training"
-    ) { toInt() }
+    ) { toInt() }.default(56)
 
     val trainPercentage by parser.storing(
             "-t", "--trainingPercentage",
             help = "percentage of test data to use as a test set"
-    ) { toInt() }
+    ) { toInt() }.default(80)
 }
 
 fun main(args: Array<String>) {
