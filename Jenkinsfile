@@ -12,7 +12,7 @@ spec:
     - cat
     tty: true
     volumeMounts:
-    - mountPath: '/opt/app/shared'
+    - mountPath: '/workspace/opt/app/shared/'
       name: sharedvolume
   - name: kaniko
     workingDir: /tmp/jenkins
@@ -22,7 +22,7 @@ spec:
     - /busybox/cat
     tty: true
     volumeMounts:
-    - mountPath: '/opt/app/shared'
+    - mountPath: '/workspace/opt/app/shared/'
       name: sharedvolume
   volumes:
     - name: sharedvolume
@@ -35,7 +35,7 @@ spec:
      container('application-container') {
       sh 'chmod 777 gradlew'
       sh './gradlew clean build'
-      sh 'cp build/distributions/*.zip /opt/app/shared'
+      sh 'cp build/distributions/*.zip /workspace/opt/app/shared/'
       sh 'cp Dockerfile /opt/app/shared'
      }
     }
@@ -45,7 +45,7 @@ spec:
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
        sh 'cd /opt/app/shared/ && ls'
-       sh '/kaniko/executor -f /opt/app/shared/Dockerfile --destination=docker.ultimaengineering.io/title-classifier'
+       sh '/kaniko/executor -f /workspace/opt/app/shared/Dockerfile --destination=docker.ultimaengineering.io/title-classifier'
       }
      }
    }
