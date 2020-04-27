@@ -43,7 +43,7 @@ spec:
       PATH = "/busybox:/kaniko:$PATH"
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
-       sh 'cd /opt/app/shared/ && ls'
+       sh 'cd /workspace/opt/app/shared/ && ls'
        sh '/kaniko/executor -f /workspace/opt/app/shared/Dockerfile --destination=docker.ultimaengineering.io/title-classifier'
       }
      }
