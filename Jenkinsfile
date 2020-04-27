@@ -38,7 +38,7 @@ spec:
        FROM docker.ultimaengineering.io:deeplearning_base:1.0.0
        MAINTAINER Alexander Montgomery
        RUN mkdir/home/jenkins/m2 """
-       sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destinationdocker.ultimaengineering.io/title-classifier'
+       sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destination=docker.ultimaengineering.io/title-classifier'
       }
      }
    }
