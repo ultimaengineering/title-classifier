@@ -5,4 +5,4 @@ USER root
 COPY /opt/app/shared/title-classifier.zip /app
 RUN cd /app && unzip /app/title-classifier.zip
 WORKDIR /app/title-classifier
-CMD ./title-classifier
+CMD ./bin/title-classifier
