@@ -36,7 +36,7 @@ spec:
       sh 'chmod 777 gradlew'
       sh './gradlew clean build'
       sh 'cp build/distributions/*.zip /workspace/opt/app/shared/'
-      sh 'cp Dockerfile /workspace/opt/app/shared/* /'
+      sh 'cp Dockerfile /workspace/opt/app/shared/'
      }
     }
     stage('Build with Kaniko') {
