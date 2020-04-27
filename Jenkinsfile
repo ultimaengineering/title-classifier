@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: application-container
-    image: docker.ultimaengineering.io/deeplearning_base:1.0.0
+    image: openjdk:openjdk:15-alpine
     command:
     - cat
     tty: true
@@ -36,6 +36,7 @@ spec:
       sh 'chmod 777 gradlew'
       sh './gradlew clean build'
       sh 'cp build/distributions/*.zip /opt/app/shared'
+      sh 'cp Dockerfile /opt/app/shared'
      }
     }
     stage('Build with Kaniko') {
@@ -43,13 +44,7 @@ spec:
       PATH = "/busybox:/kaniko:$PATH"
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
-
-       writeFile file: "Dockerfile", text: """
-       FROM docker.ultimaengineering.io:deeplearning_base:1.0.0
-       MAINTAINER Alexander Montgomery
-       RUN mkdir/home/jenkins/m2 """
-       sh 'cd /opt/app/shared && ls'
-       sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destination=docker.ultimaengineering.io/title-classifier'
+       sh '/kaniko/executor -f `pwd`/opt/app.shared/Dockerfile -c `pwd` --cache=true --destination=docker.ultimaengineering.io/title-classifier'
       }
      }
    }
