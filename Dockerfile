@@ -1,4 +1,4 @@
-FROM docker.ultimaengineering.io:deeplearning_base:1.0.0
+FROM firefox7025/deeplearning_base
 MAINTAINER Alexander Montgomery
 RUN mkdir /app
 RUN apt-get install zip
