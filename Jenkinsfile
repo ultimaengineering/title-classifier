@@ -11,6 +11,9 @@ spec:
     command:
     - cat
     tty: true
+    volumeMounts:
+    - mountPath: '/opt/app/shared'
+      name: sharedvolume
   - name: kaniko
     workingDir: /tmp/jenkins
     image: gcr.io/kaniko-project/executor:debug
@@ -18,6 +21,12 @@ spec:
     command:
     - /busybox/cat
     tty: true
+    volumeMounts:
+    - mountPath: '/opt/app/shared'
+      name: sharedvolume
+  volumes:
+    - name: sharedvolume
+      emptyDir: {}
 """
 ) {
    node(POD_LABEL) {
