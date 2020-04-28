@@ -15,7 +15,7 @@ class Trainer internal constructor(private val dataLocation: Path, private val m
         writeLabels(trainIter.labels)
         val network = Network(trainIter.labels.size, iterConfig.getIterationsPerEpoch(), modelLocation, testIter, previousModel).network
 
-        if (gpuWorkers != 0) {
+        if (gpuWorkers == 0) {
             network.fit(trainIter, epochs)
         } else {
             val wrapper = ParallelWrapper.Builder(network)
