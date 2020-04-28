@@ -28,6 +28,11 @@ class App(parser: ArgParser) {
             help = "selected batch size for training"
     ) { toInt() }.default(56)
 
+    val workers by parser.storing(
+            "-g", "--gpus",
+            help = "number of gpus to use"
+    ) { toInt() }.default(0)
+
     val trainPercentage by parser.storing(
             "-t", "--trainingPercentage",
             help = "percentage of test data to use as a test set"
@@ -38,7 +43,7 @@ fun main(args: Array<String>) {
     ArgParser(args).parseInto(::App).run {
         var dataDir = Paths.get(dataPath)
         val modelDir = Paths.get(modelPath)
-        val trainer = Trainer(dataDir, modelDir, epochs, batchSize, trainPercentage, previousModel)
+        val trainer = Trainer(dataDir, modelDir, epochs, batchSize, trainPercentage, workers, previousModel)
         trainer.beginTrain()
     }
 }
