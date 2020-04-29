@@ -8,6 +8,7 @@ import org.datavec.image.loader.BaseImageLoader
 import org.datavec.image.recordreader.ImageRecordReader
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
+import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler
 import java.io.IOException
 import java.net.URI
 import java.nio.file.Files
@@ -38,7 +39,9 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
     private fun makeDataSetIterator(inputSplit: InputSplit, batchSize: Int): DataSetIterator {
         val recordReader = ImageRecordReader(height, width, channels, labelMaker)
         recordReader.initialize(inputSplit)
-        return RecordReaderDataSetIterator(recordReader, batchSize, 1, recordReader.numLabels())
+        val dataset = RecordReaderDataSetIterator(recordReader, batchSize, 1, recordReader.numLabels())
+        dataset.setPreProcessor { ImagePreProcessingScaler() }
+        return dataset
     }
 
     private fun sufficientLabelData(path: Path): Boolean {
