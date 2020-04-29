@@ -69,7 +69,7 @@ class Network internal constructor(private val numLabels: Int,
 
     private fun getCheckPointListener(): BaseTrainingListener {
         return CheckpointListener.Builder(modelDirectory.toFile())
-                  .keepLastAndEvery(3, 4)
+                  .keepLast(1)
                   .saveEveryNIterations(10)
                   .logSaving(true)
                   .deleteExisting(true)
