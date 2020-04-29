@@ -94,7 +94,7 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
         val filesInDirSplit = collectionInputSplit.sample(randomPathFilter, trainDataPercentage.toDouble(), 100 - trainDataPercentage.toDouble())
         trainData = filesInDirSplit[0]
         testData = filesInDirSplit[1]
-        estimatedIterations = (filesInDirSplit[0].length() / batchSize).toInt()
+        estimatedIterations = (filesInDirSplit[0].length() / batchSize).toInt() * 20
         initDateSetIterators(batchSize)
     }
 }
