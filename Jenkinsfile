@@ -45,7 +45,7 @@ spec:
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
        sh 'cd /workspace/opt/app/shared/ && ls'
-       sh '/kaniko/executor -f /workspace/opt/app/shared/Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
+       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
       }
      }
    }
