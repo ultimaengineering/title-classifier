@@ -5,8 +5,8 @@ USER root
 ENV data = /data
 ENV models = /models
 ENV previousModels = ""
-ENV batchSize = 32
-ENV gpuWorkers = 0
+ARG batchSize
+ARG gpuWorkers
 
 COPY title-classifier.zip /app
 RUN cd /app && unzip /app/title-classifier.zip
