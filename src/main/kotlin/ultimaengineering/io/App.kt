@@ -40,6 +40,7 @@ class App(parser: ArgParser) {
 }
 
 fun main(args: Array<String>) {
+    print(args)
     ArgParser(args).parseInto(::App).run {
         var dataDir = Paths.get(dataPath)
         val modelDir = Paths.get(modelPath)
