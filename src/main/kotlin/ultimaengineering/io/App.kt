@@ -4,6 +4,7 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import ultimaengineering.io.titleclassifier.Trainer
 import java.nio.file.Paths
+import java.util.*
 
 class App(parser: ArgParser) {
     val dataPath by parser.storing(
@@ -40,7 +41,7 @@ class App(parser: ArgParser) {
 }
 
 fun main(args: Array<String>) {
-    print(args)
+    println(Arrays.toString(args))
     ArgParser(args).parseInto(::App).run {
         var dataDir = Paths.get(dataPath)
         val modelDir = Paths.get(modelPath)

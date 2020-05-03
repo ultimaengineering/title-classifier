@@ -18,6 +18,8 @@ spec:
     workingDir: /tmp/jenkins
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
+    capabilities:
+      add: ["IPC_LOCK"]
     command:
     - /busybox/cat
     tty: true

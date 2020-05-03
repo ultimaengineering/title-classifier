@@ -7,8 +7,7 @@ ENV models = /models
 ENV previousModels = ""
 ARG batchSize
 ARG gpuWorkers
-
 COPY title-classifier.zip /app
-RUN cd /app && unzip /app/title-classifier.zip
+RUN unzip /app/title-classifier.zip  && rm /app/title-classifier.zip
 WORKDIR /app/title-classifier
 CMD ./bin/title-classifier -d data -m models -o previousModels -b batchSize -g gpuWorkers
