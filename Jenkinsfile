@@ -16,7 +16,7 @@ spec:
       name: sharedvolume
   - name: kaniko
     workingDir: /tmp/jenkins
-    image: gcr.io/kaniko-project/executor:debug
+    image: gcr.io/kaniko-project/executor:latest
     imagePullPolicy: Always
     capabilities:
       add: ["IPC_LOCK"]
