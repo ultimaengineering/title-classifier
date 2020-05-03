@@ -48,7 +48,7 @@ spec:
       container(name: 'kaniko', shell: '/busybox/sh') {
        sh 'cp /workspace/opt/app/shared/* /workspace/'
        sh 'pwd'
-       sh 'ulimit -n -1'
+       sh 'ulimit -n 10000'
        sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
       }
      }
