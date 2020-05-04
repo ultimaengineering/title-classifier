@@ -11,7 +11,7 @@ class App(parser: ArgParser) {
             "-d", "--data",
             help = "data to be trained on").default<String> {
             val env = System.getProperty("data")
-            if (env.isEmpty()) {
+            if (env.isNullOrEmpty()) {
                 ""
             } else {
                 env
@@ -22,7 +22,7 @@ class App(parser: ArgParser) {
             "-m", "--model",
             help = "path to models").default<String> {
         val env = System.getProperty("model")
-        if (env.isEmpty()) {
+        if (env.isNullOrEmpty()) {
             ""
         } else {
             env
@@ -33,7 +33,7 @@ class App(parser: ArgParser) {
             "-o", "--old_model", help = "path to previous model"
     ).default<String> {
         val env = System.getProperty("old_model")
-        if (env.isEmpty()) {
+        if (env.isNullOrEmpty()) {
             ""
         } else {
             env.toString()
@@ -46,7 +46,7 @@ class App(parser: ArgParser) {
     ) { toInt() }.default<Int>
         {
             val env = System.getProperty("epochs")
-            if (env.isEmpty()) {
+            if (env.isNullOrEmpty()) {
                 20
             } else {
                 env.toInt()
@@ -59,7 +59,7 @@ class App(parser: ArgParser) {
     ) { toInt() }.default<Int>
     {
         val env = System.getProperty("batchSize")
-        if (env.isEmpty()) {
+        if (env.isNullOrEmpty()) {
             32
         } else {
             env.toInt()
@@ -71,7 +71,7 @@ class App(parser: ArgParser) {
             help = "number of gpus to use"
     ) { toInt() }.default<Int> {
         val env = System.getProperty("gpus")
-        if (env.isEmpty()) {
+        if (env.isNullOrEmpty()) {
             1
         } else {
             env.toInt()
@@ -84,7 +84,7 @@ class App(parser: ArgParser) {
     ) { toInt() }.default<Int>
     {
         val env = System.getProperty("trainingPercentage")
-        if (env.isEmpty()) {
+        if (env.isNullOrEmpty()) {
             80
         } else {
             env.toInt()
