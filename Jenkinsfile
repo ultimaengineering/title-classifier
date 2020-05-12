@@ -49,7 +49,7 @@ spec:
        sh 'cp /workspace/opt/app/shared/* /workspace/'
        sh 'pwd'
        sh 'ulimit -n 10000'
-       sh '/kaniko/executor -f Dockerfile --insecure --skip-tls-verify --destination=docker-registry:5000/title-classifier:latest'
+       sh '/kaniko/executor -f Dockerfile --destination=https://docker.ultimaengineering.io/title-classifier:latest'
       }
      }
    }
