@@ -58,7 +58,7 @@ class Network internal constructor(private val numLabels: Int,
     }
 
     private fun getPerformanceListener(): BaseTrainingListener {
-        return PerformanceListener(1, true)
+        return PerformanceListener(50, true)
     }
 
     private fun getEvaluationListener(): BaseTrainingListener {
@@ -70,7 +70,7 @@ class Network internal constructor(private val numLabels: Int,
     private fun getCheckPointListener(): BaseTrainingListener {
         return CheckpointListener.Builder(modelDirectory.toFile())
                   .keepLast(1)
-                  .saveEveryNIterations(10)
+                  .saveEveryNIterations(100)
                   .logSaving(true)
                   .deleteExisting(true)
                   .build()

@@ -1,6 +1,7 @@
 package ultimaengineering.io.titleclassifier
 
 import org.deeplearning4j.parallelism.ParallelWrapper
+import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -14,8 +15,7 @@ class Trainer internal constructor(private val dataLocation: Path, private val m
         val testIter = iterConfig.getTestIter()
         writeLabels(trainIter.labels)
         val network = Network(trainIter.labels.size, iterConfig.getIterationsPerEpoch(), modelLocation, testIter, previousModel).network
-
-        if (gpuWorkers == 0) {
+        if (gpuWorkers <= 1) {
             network.fit(trainIter, epochs)
         } else {
             val wrapper = ParallelWrapper.Builder(network)
@@ -23,7 +23,11 @@ class Trainer internal constructor(private val dataLocation: Path, private val m
                     .workers(gpuWorkers)
                     .build()
             for(x in 0 until epochs)
-                wrapper.fit(trainIter)
+                try {
+                    wrapper.fit(trainIter)
+                } catch (e :Exception) {
+                    print(e.stackTrace)
+                }
         }
     }
 

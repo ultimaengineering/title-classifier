@@ -16,8 +16,10 @@ spec:
       name: sharedvolume
   - name: kaniko
     workingDir: /tmp/jenkins
-    image: gcr.io/kaniko-project/executor:debug
+    image: gcr.io/kaniko-project/executor:debug-v0.14.0
     imagePullPolicy: Always
+    capabilities:
+      add: ["IPC_LOCK"]
     command:
     - /busybox/cat
     tty: true
@@ -44,6 +46,10 @@ spec:
       PATH = "/busybox:/kaniko:$PATH"
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
+       sh 'cp /workspace/opt/app/shared/* /workspace/'
+       sh 'pwd'
+       sh 'ulimit -n 10000'
+       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
        sh 'cp /workspace/opt/app/shared/* .'
        sh '/kaniko/executor -f Dockerfile --insecure --skip-tls-verify --destination=docker-registry:5000/title-classifier:latest'
       }
