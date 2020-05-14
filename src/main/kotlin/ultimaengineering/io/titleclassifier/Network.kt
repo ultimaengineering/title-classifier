@@ -11,8 +11,8 @@ import org.deeplearning4j.optimize.listeners.EvaluativeListener
 import org.deeplearning4j.optimize.listeners.PerformanceListener
 import org.deeplearning4j.optimize.listeners.TimeIterationListener
 import org.deeplearning4j.ui.api.UIServer.getInstance
-import org.deeplearning4j.ui.stats.StatsListener
-import org.deeplearning4j.ui.storage.InMemoryStatsStorage
+import org.deeplearning4j.ui.model.stats.StatsListener
+import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
 import org.deeplearning4j.util.ModelSerializer
 import org.deeplearning4j.zoo.model.Darknet19
 import org.nd4j.evaluation.classification.Evaluation
