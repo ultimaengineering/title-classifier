@@ -68,3 +68,5 @@ targetCompatibility = JavaVersion.VERSION_1_8
 application {
     mainClassName = 'ultimaengineering.io.AppKt'
 }
+
+tasks.distTar.enabled = false

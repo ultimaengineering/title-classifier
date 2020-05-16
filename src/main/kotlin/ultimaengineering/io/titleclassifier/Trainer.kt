@@ -25,8 +25,10 @@ class Trainer internal constructor(private val dataLocation: Path, private val m
             for(x in 0 until epochs)
                 try {
                     wrapper.fit(trainIter)
+                    trainIter.reset()
                 } catch (e :Exception) {
                     print(e.stackTrace)
+                    trainIter.reset()
                 }
         }
     }
