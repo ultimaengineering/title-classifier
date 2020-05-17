@@ -35,7 +35,7 @@ class Network internal constructor(private val numLabels: Int,
                         .numClasses(numLabels)
                         .seed(seed.toLong())
                         .workspaceMode(WorkspaceMode.ENABLED)
-                        .cacheMode(CacheMode.HOST)
+                        .cacheMode(CacheMode.DEVICE)
                         .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
                         .build().init()
             } else {

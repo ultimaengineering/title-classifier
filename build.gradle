@@ -36,6 +36,7 @@ dependencies {
     implementation "org.nd4j:nd4j-cuda-${cuda_version}-platform:${dl4j_version}"
     implementation "org.deeplearning4j:deeplearning4j-ui:${dl4j_version}"
     implementation "org.deeplearning4j:deeplearning4j-parallel-wrapper:${dl4j_version}"
+    implementation "org.bytedeco:cuda-platform-redist:10.2-7.6-1.5.3"
     // logging
     implementation "org.slf4j:slf4j-simple:${slf4j_version}"
     implementation "org.slf4j:slf4j-api:${slf4j_version}"
@@ -67,6 +68,10 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 application {
     mainClassName = 'ultimaengineering.io.AppKt'
+}
+
+distZip {
+    zip64 = true
 }
 
 tasks.distTar.enabled = false
