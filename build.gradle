@@ -34,6 +34,7 @@ dependencies {
     implementation "org.deeplearning4j:deeplearning4j-core:${dl4j_version}"
     implementation "org.nd4j:nd4j-cuda-${cuda_version}:${dl4j_version}"
     implementation "org.nd4j:nd4j-cuda-${cuda_version}-platform:${dl4j_version}"
+    implementation "org.deeplearning4j:deeplearning4j-cuda-${cuda_version}:${dl4j_version}"
     implementation "org.deeplearning4j:deeplearning4j-ui:${dl4j_version}"
     implementation "org.deeplearning4j:deeplearning4j-parallel-wrapper:${dl4j_version}"
     implementation "org.bytedeco:cuda-platform-redist:10.2-7.6-1.5.3"
