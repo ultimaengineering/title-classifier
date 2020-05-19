@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption
 
 class Trainer internal constructor(private val dataLocation: Path, private val modelLocation: Path, private val epochs: Int, private val batchSize: Int, private val trainPercentage: Int, private val gpuWorkers: Int, private val previousModel: String) {
     fun beginTrain() {
-        val iterConfig = TitleDataIterator(dataLocation, trainPercentage, batchSize)
+        val iterConfig = TitleDataIterator(dataLocation, trainPercentage, batchSize, epochs)
         val trainIter = iterConfig.getTrainIter()
         val testIter = iterConfig.getTestIter()
         writeLabels(trainIter.labels)

@@ -17,7 +17,7 @@ import java.util.*
 import java.util.stream.Collectors
 import kotlin.properties.Delegates
 
-class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize: Int) {
+class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize: Int, epochs: Int) {
 
     private fun initDateSetIterators(batchSize: Int) {
         trainDataIterator = makeDataSetIterator(trainData, batchSize)
@@ -97,7 +97,7 @@ class TitleDataIterator(dataDirectory: Path, trainDataPercentage: Int, batchSize
         val filesInDirSplit = collectionInputSplit.sample(randomPathFilter, trainDataPercentage.toDouble(), 100 - trainDataPercentage.toDouble())
         trainData = filesInDirSplit[0]
         testData = filesInDirSplit[1]
-        estimatedIterations = (filesInDirSplit[0].length() / batchSize).toInt() * 20
+        estimatedIterations = (filesInDirSplit[0].length() / batchSize).toInt() * epochs
         initDateSetIterators(batchSize)
     }
 }

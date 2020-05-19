@@ -54,7 +54,7 @@ class Network internal constructor(private val numLabels: Int,
     }
 
     private fun getPerformanceListener(): BaseTrainingListener {
-        return PerformanceListener(50, true)
+        return PerformanceListener(1, true, true)
     }
 
     private fun getEvaluationListener(): BaseTrainingListener {
