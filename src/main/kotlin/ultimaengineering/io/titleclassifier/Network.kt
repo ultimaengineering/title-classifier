@@ -10,7 +10,7 @@ import org.deeplearning4j.optimize.listeners.PerformanceListener
 import org.deeplearning4j.optimize.listeners.TimeIterationListener
 import org.deeplearning4j.ui.api.UIServer.getInstance
 import org.deeplearning4j.ui.model.stats.StatsListener
-import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
+import org.deeplearning4j.ui.model.storage.FileStatsStorage
 import org.deeplearning4j.util.ModelSerializer
 import org.deeplearning4j.zoo.model.Darknet19
 import org.nd4j.evaluation.classification.Evaluation
@@ -48,9 +48,10 @@ class Network internal constructor(private val numLabels: Int,
 
     private fun addUI(): StatsListener {
         val ui = getInstance()
-        val statsStorage = InMemoryStatsStorage()
-        ui.attach(statsStorage)
-        return StatsListener(statsStorage)
+        val statsStorage = modelDirectory.resolve("web-info.tmp")
+        val stats = FileStatsStorage(statsStorage.toFile())
+        ui.attach(stats)
+        return StatsListener(stats)
     }
 
     private fun getPerformanceListener(): BaseTrainingListener {
