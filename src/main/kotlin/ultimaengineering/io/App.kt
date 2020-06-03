@@ -12,7 +12,7 @@ class App(parser: ArgParser) {
             help = "data to be trained on").default<String> {
             val env = System.getProperty("data")
             if (env.isNullOrEmpty()) {
-                ""
+                "/data"
             } else {
                 env
             }
@@ -23,7 +23,7 @@ class App(parser: ArgParser) {
             help = "path to models").default<String> {
         val env = System.getProperty("model")
         if (env.isNullOrEmpty()) {
-            ""
+            "/models"
         } else {
             env
         }
