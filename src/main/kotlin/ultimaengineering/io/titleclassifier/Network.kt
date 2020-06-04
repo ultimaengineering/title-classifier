@@ -33,7 +33,7 @@ class Network internal constructor(private val numLabels: Int,
                         .numClasses(numLabels)
                         .seed(seed.toLong())
                         .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
-                        .build().initPretrained() as ComputationGraph
+                        .build().init()
             } else {
                     model = ModelSerializer.restoreComputationGraph(previousModel, true)
                     model.init()
