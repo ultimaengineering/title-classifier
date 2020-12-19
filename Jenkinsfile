@@ -27,8 +27,9 @@ spec:
     - mountPath: '/workspace/opt/app/shared/'
       name: sharedvolume
   volumes:
-    - name: sharedvolume
-      emptyDir: {}
+      - name: sharedvolume
+        persistentVolumeClaim:
+          claimName: sharedvolume
 """
 ) {
    node(POD_LABEL) {
