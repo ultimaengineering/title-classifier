@@ -28,8 +28,7 @@ spec:
       name: sharedvolume
   volumes:
       - name: sharedvolume
-        persistentVolumeClaim:
-          claimName: sharedvolume
+        emptyDir: {}
 """
 ) {
    node(POD_LABEL) {
@@ -38,8 +37,8 @@ spec:
      container('application-container') {
       sh 'chmod 777 gradlew'
       sh './gradlew clean build'
-      sh 'cp build/distributions/*.zip /workspace/opt/app/shared/'
-      sh 'cp Dockerfile /workspace/opt/app/shared/'
+      sh 'cp build/distributions/title-classifier.zip /workspace/opt/app/shared/'
+      sh 'cp Dockerfile /workspace/opt/app/shared/Dockerfile-${GIT_BRANCH}-${BUILD_NUMBER}'
      }
     }
     stage('Build with Kaniko') {
@@ -50,7 +49,7 @@ spec:
        sh 'cp -r /workspace/opt/app/shared/* /workspace/'
        sh 'pwd'
        sh 'ulimit -n 10000'
-       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
+       sh '/kaniko/executor -f Dockerfile-${GIT_BRANCH}-${BUILD_NUMBER} --destination=docker.ultimaengineering.io/title-classifier:latest'
       }
      }
    }
