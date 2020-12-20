@@ -50,7 +50,7 @@ spec:
        sh 'ls /workspace/opt/app/shared/'
        sh 'cp -r /workspace/opt/app/shared/* /workspace/'
        sh 'ulimit -n 10000'
-       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
+       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:${BRANCH_NAME}-${BUILD_NUMBER}'
       }
      }
    }
