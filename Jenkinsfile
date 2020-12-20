@@ -20,8 +20,6 @@ spec:
     imagePullPolicy: Always
     capabilities:
       add: ["IPC_LOCK"]
-    command:
-    - /busybox/cat
     tty: true
     volumeMounts:
     - mountPath: '/workspace/opt/app/shared/'
