@@ -38,8 +38,8 @@ spec:
      container('application-container') {
       sh 'chmod 777 gradlew'
       sh './gradlew clean build'
-      sh 'cp build/distributions/title-classifier.zip /workspace/opt/app/shared/'
-      sh 'cp Dockerfile /workspace/opt/app/shared/Dockerfile-${GIT_BRANCH}-${BUILD_NUMBER}'
+      sh 'cp build/distributions/*.zip /workspace/opt/app/shared/'
+      sh 'cp Dockerfile /workspace/opt/app/shared'
      }
     }
     stage('Build with Kaniko') {
@@ -47,6 +47,7 @@ spec:
       PATH = "/busybox:/kaniko:$PATH"
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
+       sh 'pwd'
        sh 'cp -r /workspace/opt/app/shared/* /workspace/'
        sh 'pwd'
        sh 'ulimit -n 10000'
