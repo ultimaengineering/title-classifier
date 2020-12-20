@@ -5,7 +5,7 @@ buildscript {
         slf4j_version = "1.7.25"
     }
     repositories {
-        maven { url "https://nexus.ultimaengineering.io" }
+        maven { url "https://nexus.ultimaengineering.io/repository/maven-central/" }
         maven { url "https://kotlin.bintray.com/kotlinx" }
         mavenCentral()
     }
