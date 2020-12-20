@@ -28,7 +28,8 @@ spec:
       name: sharedvolume
   volumes:
       - name: sharedvolume
-        emptyDir: {}
+        emptyDir:
+          medium: "Memory"
 """
 ) {
    node(POD_LABEL) {
