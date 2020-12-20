@@ -16,10 +16,12 @@ spec:
       name: sharedvolume
   - name: kaniko
     workingDir: /tmp/jenkins
-    image: gcr.io/kaniko-project/executor:latest
+    image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
     capabilities:
       add: ["IPC_LOCK"]
+    command:
+    - /busybox/cat
     tty: true
     volumeMounts:
     - mountPath: '/workspace/opt/app/shared/'
