@@ -16,7 +16,7 @@ spec:
       name: sharedvolume
   - name: kaniko
     workingDir: /tmp/jenkins
-    image: gcr.io/kaniko-project/executor:debug-v0.14.0
+    image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
     capabilities:
       add: ["IPC_LOCK"]
@@ -28,8 +28,8 @@ spec:
       name: sharedvolume
   volumes:
       - name: sharedvolume
-        persistentVolumeClaim:
-          claimName: sharedvolume
+        emptyDir:
+          medium: "Memory"
 """
 ) {
    node(POD_LABEL) {
@@ -39,7 +39,7 @@ spec:
       sh 'chmod 777 gradlew'
       sh './gradlew clean build'
       sh 'cp build/distributions/*.zip /workspace/opt/app/shared/'
-      sh 'cp Dockerfile /workspace/opt/app/shared/'
+      sh 'cp Dockerfile /workspace/opt/app/shared'
      }
     }
     stage('Build with Kaniko') {
@@ -47,10 +47,10 @@ spec:
       PATH = "/busybox:/kaniko:$PATH"
      }
       container(name: 'kaniko', shell: '/busybox/sh') {
+       sh 'ls /workspace/opt/app/shared/'
        sh 'cp -r /workspace/opt/app/shared/* /workspace/'
-       sh 'pwd'
        sh 'ulimit -n 10000'
-       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:latest'
+       sh '/kaniko/executor -f Dockerfile --destination=docker.ultimaengineering.io/title-classifier:${BRANCH_NAME}-${BUILD_NUMBER}'
       }
      }
    }
